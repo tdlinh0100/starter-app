@@ -55,7 +55,7 @@ describe('API Endpoints', () => {
     describe('GET /api/students', () => {
         it('should return students list', async () => {
             const res = await request(app).get('/api/students');
-            expect(res.statusCode).toBe(201);
+            expect(res.statusCode).toBe(200);
             expect(res.body).toHaveProperty('count');
             expect(res.body).toHaveProperty('data');
             expect(Array.isArray(res.body.data)).toBe(true);
