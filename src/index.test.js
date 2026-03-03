@@ -1,49 +1,9 @@
 const request = require('supertest');
-const express = require('express');
-
-// Import app logic (we'll need to refactor index.js to export app)
-// For now, create a simple test structure
+const app = require('./index');
 
 describe('API Endpoints', () => {
-    let app;
-    let server;
-
-    beforeAll(() => {
-        // Mock app setup
-        app = express();
-        app.use(express.json());
-
-        app.get('/', (req, res) => {
-            res.json({
-                message: '🐳 Hello from Docker Workshop!',
-                workshop: 'From Code to Cloud - FPT University Da Nang',
-                timestamp: new Date().toISOString(),
-                environment: process.env.NODE_ENV || 'development',
-            });
-        });
-
-        app.get('/health', (req, res) => {
-            res.status(200).json({
-                status: 'ok',
-                uptime: process.uptime(),
-                timestamp: new Date().toISOString(),
-            });
-        });
-
-        app.get('/api/info', (req, res) => {
-            res.json({
-                app: 'docker-workshop-starter',
-                version: '1.0.0',
-            });
-        });
-    });
-
     afterAll((done) => {
-        if (server) {
-            server.close(done);
-        } else {
-            done();
-        }
+        done();
     });
 
     describe('GET /', () => {
@@ -94,21 +54,26 @@ describe('API Endpoints', () => {
 
     describe('GET /api/students', () => {
         it('should return students list', async () => {
-            const students = [
-                { id: 1, name: 'Nguyen Van A', class: 'SE1234' },
-                { id: 2, name: 'Tran Thi B', class: 'SE1234' },
-                { id: 3, name: 'Le Van C', class: 'SE5678' },
-            ];
-
-            app.get('/api/students', (req, res) => {
-                res.json({ count: students.length, data: students });
-            });
-
             const res = await request(app).get('/api/students');
-            expect(res.statusCode).toBe(200);
+            expect(res.statusCode).toBe(201);
             expect(res.body).toHaveProperty('count');
             expect(res.body).toHaveProperty('data');
             expect(Array.isArray(res.body.data)).toBe(true);
+        });
+    });
+
+    describe('GET /api/students/:id', () => {
+        it('should return a student by id', async () => {
+            const res = await request(app).get('/api/students/1');
+            expect(res.statusCode).toBe(200);
+            expect(res.body).toHaveProperty('id', 1);
+            expect(res.body).toHaveProperty('name');
+        });
+
+        it('should return 404 for non-existent student', async () => {
+            const res = await request(app).get('/api/students/999');
+            expect(res.statusCode).toBe(404);
+            expect(res.body).toHaveProperty('error');
         });
     });
 });

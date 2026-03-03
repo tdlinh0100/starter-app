@@ -34,7 +34,3 @@ npm start
 | GET | `/api/info` | Thông tin hệ thống |
 | GET | `/api/students` | Danh sách SV |
 | GET | `/api/students/:id` | SV theo ID |
-
-## 🐳 Docker (làm trong workshop)
-
-Bạn sẽ tạo Dockerfile và docker-compose.yml để Docker hóa app này!

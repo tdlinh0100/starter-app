@@ -1,4 +1,4 @@
-name: Build & Deploy to Cloud
+name: Build & Push to GHCR
 on:
   push:
     branches: [ main ]
@@ -6,7 +6,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -24,4 +24,3 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository }}:latest
-      - run: curl -X POST ${{ secrets.DEPLOY_HOOK }}
